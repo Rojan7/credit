@@ -110,3 +110,19 @@ def delete_customer(request, pk):
             messages.error(request, "Incorrect password. Customer was not deleted.")
 
     return render(request, "shop/delete_customer.html", {"customer": customer})
+
+def edit_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+
+    if request.method == "POST":
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Customer updated successfully.")
+            return redirect("home")
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = CustomerForm(instance=customer)
+
+    return render(request, "shop/edit_customer.html", {"form": form, "customer": customer})

@@ -75,18 +75,19 @@
         <td class="px-4 py-2 {% if customer.total_due > 0 %}text-red-600{% else %}text-green-600{% endif %}">
           {{ customer.total_due }}
         </td>
-        <td class="px-4 py-2 text-right">
+        <td class="px-4 py-2 text-right space-x-1">
           <a href="{% url 'customer_detail' customer.pk %}"
-             class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-             View
+             class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs sm:text-sm">
+            View
           </a>
-    
-</td>
-
-        <td class="px-4 py-2 text-right">
+          <a href="{% url 'edit_customer' customer.pk %}"
+             class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs sm:text-sm">
+            Edit
+          </a>
           <a href="{% url 'delete_customer' customer.pk %}"
-       class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 ml-2">Delete</a>
-          
+             class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs sm:text-sm">
+            Delete
+          </a>
         </td>
       </tr>
       {% empty %}
@@ -102,7 +103,6 @@
 <a href="{% url 'add_customer' %}"
    class="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg sm:hidden"
    aria-label="Add customer">
-  <!-- simple plus icon (SVG) -->
   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
   </svg>
