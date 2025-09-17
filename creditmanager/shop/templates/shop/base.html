@@ -1,13 +1,17 @@
-{% load static tailwind_tags %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Credit Manager{% endblock %}</title>
-  {% tailwind_css %}
+
+  <!-- Tailwind CSS (production) -->
+  <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen">
+
+  <!-- Navbar -->
   <nav class="bg-blue-600 text-white p-4">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <a href="{% url 'home' %}" class="text-lg font-bold">Credit Manager</a>
@@ -16,6 +20,8 @@
       </a>
     </div>
   </nav>
+
+  <!-- Messages -->
   {% if messages %}
   <div class="max-w-6xl mx-auto p-4">
     {% for message in messages %}
@@ -24,11 +30,12 @@
       </div>
     {% endfor %}
   </div>
-{% endif %}
+  {% endif %}
 
-
+  <!-- Main content -->
   <main class="max-w-6xl mx-auto p-4">
     {% block content %}{% endblock %}
   </main>
+
 </body>
 </html>
