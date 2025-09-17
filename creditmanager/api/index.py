@@ -1,1 +1,1 @@
-from test_project.wsgi import application
+from creditmanager.wsgi import application
