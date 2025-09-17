@@ -4,10 +4,22 @@ from .models import Customer, Entry
 from .forms import CustomerForm, EntryForm
 from django.contrib import messages
 
-
+DASHBOARD_PASSWORD = "9842080553"
 
 # Dashboard (Home)
 def home(request):
+    # --- Password protection ---
+    if not request.session.get('dashboard_access', False):
+        if request.method == "POST":
+            password = request.POST.get("password")
+            if password == DASHBOARD_PASSWORD:
+                request.session['dashboard_access'] = True
+                return redirect('home')
+            else:
+                return render(request, "shop/password.html", {"error": "Incorrect password!"})
+        return render(request, "shop/password.html")  # show password form
+
+    # --- Actual dashboard ---
     query = request.GET.get("q")
     customers = Customer.objects.all()
 
@@ -81,16 +93,19 @@ def edit_entry(request, entry_id):
     else:
         form = EntryForm(instance=entry)
     return render(request, "shop/edit_entry.html", {"form": form, "entry": entry})
+
+
+# Delete customer
 def delete_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
 
     if request.method == "POST":
         password = request.POST.get("password")
-        if password == "9842080553":  # password check
+        if password == DASHBOARD_PASSWORD:  # password check
             customer_name = customer.name
-            customer.delete()  # actually delete the object
+            customer.delete()
             messages.success(request, f"Customer '{customer_name}' deleted successfully.")
-            return redirect("home")  # redirect back to home page immediately
+            return redirect("home")
         else:
             messages.error(request, "Incorrect password. Customer was not deleted.")
 
