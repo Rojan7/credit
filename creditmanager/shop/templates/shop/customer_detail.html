@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+    <h1 class="text-2xl font-bold">{{ customer.name }}</h1>
+    <p class="text-lg">
+      <span class="font-semibold">Total Due:</span>
+      <span class="{% if customer.total_due > 0 %}text-red-600{% else %}text-green-600{% endif %}">
+        {{ customer.total_due }}
+      </span>
+    </p>
+  </div>
+
+  <!-- Add New Entry -->
+  <div class="bg-white rounded shadow p-4 sm:p-6">
+    <h2 class="text-lg font-semibold mb-4">Add New Entry</h2>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        Add
+      </button>
+    </form>
+  </div>
+
+  <!-- Entries List -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-3 py-2 text-left">Date</th>
+          <th class="px-3 py-2 text-left">Type</th>
+          <th class="px-3 py-2 text-left">Goods</th>
+          <th class="px-3 py-2 text-left">Amount</th>
+          <th class="px-3 py-2 text-left">Remarks</th>
+          <th class="px-3 py-2 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for entry in entries %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-3 py-2 whitespace-nowrap">{{ entry.date|date:"M d, Y H:i" }}</td>
+          <td class="px-3 py-2 whitespace-nowrap">
+            {% if entry.is_payment %}
+              <span class="text-green-600 font-medium">Payment</span>
+            {% else %}
+              <span class="text-blue-600 font-medium">Purchase</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-2">{{ entry.goods|default:"-" }}</td>
+          <td class="px-3 py-2">{{ entry.amount }}</td>
+          <td class="px-3 py-2">{{ entry.remarks|default:"-" }}</td>
+          <td class="px-3 py-2 text-right whitespace-nowrap space-x-1">
+            <a href="{% url 'edit_entry' entry.id %}" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs sm:text-sm">Edit</a>
+            <a href="{% url 'delete_entry' entry.id %}" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs sm:text-sm"
+               onclick="return confirm('Delete this entry?');">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="px-3 py-3 text-center text-gray-500">No entries yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-4">
+    <a href="{% url 'home' %}" class="text-blue-600 hover:underline">← Back to Dashboard</a>
+  </div>
+
+</div>
+{% endblock %}

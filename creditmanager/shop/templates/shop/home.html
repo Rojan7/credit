@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Header: title + search + add button -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+  <div class="flex items-center gap-3">
+    <h1 class="text-2xl font-bold">Customer Dashboard</h1>
+
+    <!-- Desktop Add button (hidden on small screens) -->
+    <a href="{% url 'add_customer' %}"
+       class="hidden sm:inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition"
+       aria-label="Add customer">
+      + Add Customer
+    </a>
+  </div>
+
+  <!-- Search -->
+  <form method="get" class="flex w-full sm:w-1/3">
+    <input
+      type="text"
+      name="q"
+      value="{{ query|default:'' }}"
+      placeholder="Search customers..."
+      class="flex-grow rounded-l px-3 py-2 border focus:ring focus:ring-blue-200"
+      aria-label="Search customers"
+    >
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700">
+      Search
+    </button>
+  </form>
+
+  <!-- Mobile Add button (visible only on small screens) -->
+  <a href="{% url 'add_customer' %}"
+     class="sm:hidden inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition"
+     aria-label="Add customer">
+    + Add
+  </a>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Total Customers</p>
+    <p class="text-xl font-bold">{{ customers.count }}</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Total Due</p>
+    <p class="text-xl font-bold text-red-600">{{ total_due }}</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-sm text-gray-500">Last Updated</p>
+    <p class="text-xl font-bold">
+      {% if last_updated %}{{ last_updated|date:"M d, Y H:i" }}{% else %}-{% endif %}
+    </p>
+  </div>
+</div>
+
+<!-- Customer List -->
+<div class="bg-white rounded shadow overflow-x-auto">
+  <table class="min-w-full text-sm">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-2 text-left font-medium">Name</th>
+        <th class="px-4 py-2 text-left font-medium">Phone</th>
+        <th class="px-4 py-2 text-left font-medium">Total Due</th>
+        <th class="px-4 py-2 text-right font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y">
+      {% for customer in customers %}
+      <tr class="hover:bg-gray-50">
+        <td class="px-4 py-2">{{ customer.name }}</td>
+        <td class="px-4 py-2">{{ customer.phone_number|default:"-" }}</td>
+        <td class="px-4 py-2 {% if customer.total_due > 0 %}text-red-600{% else %}text-green-600{% endif %}">
+          {{ customer.total_due }}
+        </td>
+        <td class="px-4 py-2 text-right">
+          <a href="{% url 'customer_detail' customer.pk %}"
+             class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+             View
+          </a>
+    
+</td>
+
+        <td class="px-4 py-2 text-right">
+          <a href="{% url 'delete_customer' customer.pk %}"
+       class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 ml-2">Delete</a>
+          
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="px-4 py-3 text-center text-gray-500">No customers yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Floating Action Button for mobile (sticky in bottom-right) -->
+<a href="{% url 'add_customer' %}"
+   class="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg sm:hidden"
+   aria-label="Add customer">
+  <!-- simple plus icon (SVG) -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+  </svg>
+</a>
+{% endblock %}

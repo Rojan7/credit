@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Delete Customer{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow mt-6">
+  <h1 class="text-xl font-bold mb-4">Delete Customer: {{ customer.name }}</h1>
+  <p class="mb-4 text-gray-600">This action is irreversible. Please enter the password to confirm deletion.</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <p class="mb-2 text-red-600">Deleted</p>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <input type="password" name="password" placeholder="Enter password"
+           class="w-full border rounded px-3 py-2 focus:ring focus:ring-blue-200" required>
+    <button type="submit" class="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete Customer</button>
+  </form>
+
+  <a href="{% url 'home' %}" class="inline-block mt-4 text-blue-600 hover:underline">← Back to Dashboard</a>
+</div>
+{% endblock %}
